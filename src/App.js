@@ -3,7 +3,7 @@ import 'antd/dist/antd.css';
 import { Table, Input, Button, Icon } from 'antd';
 
 class App extends React.Component {
-  constructor(props) {
+  constructor() {
     super()
     this.state = {
       data: [],
@@ -12,8 +12,7 @@ class App extends React.Component {
       composerText: '',
       filtered: false,
     };
-    this.onPieceChange = this.onPieceChange.bind(this);
-    this.onComposerChange = this.onComposerChange.bind(this);
+
     this.onSearch = this.onSearch.bind(this);
   }
   componentDidMount() {
@@ -29,19 +28,8 @@ class App extends React.Component {
         });
       });
   }
-  onPieceChange(e) {
-    this.setState({ pieceText: e.target.value });
-  }
-  onComposerChange(e) {
-    this.setState({ composerText: e.target.value });
-  }
-  setAgeSort = () => {
-    this.setState({
-      sortedInfo: {
-        order: 'descend',
-        columnKey: 'difficulties',
-      },
-    });
+  onInputChange = (e, prop) => {
+    this.setState({ [prop]: e.target.value });
   }
   onSearch() {
     const { pieceText, composerText, data, originalData } = this.state;
@@ -104,14 +92,14 @@ class App extends React.Component {
         ref={ele => this.pieceInput = ele}
         placeholder="Search piece"
         value={this.state.pieceText}
-        onChange={this.onPieceChange}
+        onChange={(e) => this.onInputChange(e, 'pieceText')}
         // onPressEnter={this.onSearch}
       />
       <Input 
         ref={ele => this.composerInput = ele}
         placeholder="Search composer"
         value={this.state.composerText}
-        onChange={this.onComposerChange}
+        onChange={(e) => this.onInputChange(e, 'composerText')}
         // onPressEnter={this.onSearch}
       />
       <Button onClick={this.onSearch}>Search</Button>

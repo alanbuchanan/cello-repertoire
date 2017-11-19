@@ -1,7 +1,7 @@
 {
   "name": "cello-repertoire",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "homepage": "https://alanbuchanan.github.io/cello-repertoire",
   "dependencies": {
     "antd": "^2.13.10",

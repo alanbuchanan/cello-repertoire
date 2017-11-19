@@ -12,9 +12,11 @@ class App extends React.Component {
       filterDropdownVisible: false,
       pieceText: '',
       composerText: '',
+      categoryText: '',
       publisherText: '',
       filtered: false,
       composers: [],
+      categories: [],
     };
 
     this.onSearch = this.onSearch.bind(this);
@@ -36,6 +38,14 @@ class App extends React.Component {
             }, [])
             .uniq()
             .value()
+            .sort(),
+          categories: _
+            .chain(data)
+            .reduce((acc, cur) => {
+              return acc.concat(cur.category)
+            }, [])
+            .uniq()
+            .value()
             .sort()
         });
       });
@@ -46,17 +56,25 @@ class App extends React.Component {
   onComposerInputChange = (val) => {
     this.setState({ composerText: val });
   }
+  onCategoryInputChange = (val) => {
+    this.setState({ categoryText: val });
+  }
   onSearch() {
-    const { pieceText, composerText, publisherText, data, originalData } = this.state;
+    const { pieceText, composerText, categoryText, publisherText, data, originalData } = this.state;
     const regPiece = new RegExp(pieceText, 'gi');
     const regComposer = new RegExp(composerText, 'gi');
     const regPublisher = new RegExp(publisherText, 'gi');
+    const regCategory = new RegExp(categoryText, 'gi');
 
     this.setState({
       filterDropdownVisible: false,
       filtered: !!pieceText,
       data: originalData.map((record) => {
-        const match = record.piece.match(regPiece) && record.composer.match(regComposer) && record.publisher.match(regPublisher);
+        const match = record.piece.match(regPiece) 
+          && record.composer.match(regComposer)
+          && record.publisher.match(regPublisher)
+          && record.category.match(regCategory);
+
         if (!match) {
           return null;
         }
@@ -117,10 +135,21 @@ class App extends React.Component {
         placeholder="Select a composer"
         optionFilterProp="children"
         ref={ele => this.composerInput = ele}
-        onChange={(e) => this.onComposerInputChange(e, 'composerText')}
-        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}        
+        onChange={val => this.onComposerInputChange(val)}
+        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
       >
         {this.state.composers.length > 0 && this.state.composers.map(composer => <Option value={composer}>{composer}</Option>)}
+      </Select>
+      <Select
+        showSearch
+        style={{ width: 200 }}
+        placeholder="Select a category"
+        optionFilterProp="children"
+        ref={ele => this.categoryInput = ele}
+        onChange={val => this.onCategoryInputChange(val)}
+        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+      >
+        {this.state.categories.length > 0 && this.state.categories.map(category => <Option value={category}>{category}</Option>)}
       </Select>
       <Input
         ref={ele => this.publisherInput = ele}

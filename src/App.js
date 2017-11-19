@@ -8,10 +8,12 @@ class App extends React.Component {
     this.state = {
       data: [],
       filterDropdownVisible: false,
-      searchText: '',
+      pieceText: '',
+      composerText: '',
       filtered: false,
     };
-    this.onInputChange = this.onInputChange.bind(this);
+    this.onPieceChange = this.onPieceChange.bind(this);
+    this.onComposerChange = this.onComposerChange.bind(this);
     this.onSearch = this.onSearch.bind(this);
   }
   componentDidMount() {
@@ -27,18 +29,30 @@ class App extends React.Component {
         });
       });
   }
-  onInputChange(e) {
-    this.setState({ searchText: e.target.value });
+  onPieceChange(e) {
+    this.setState({ pieceText: e.target.value });
+  }
+  onComposerChange(e) {
+    this.setState({ composerText: e.target.value });
+  }
+  setAgeSort = () => {
+    this.setState({
+      sortedInfo: {
+        order: 'descend',
+        columnKey: 'difficulties',
+      },
+    });
   }
   onSearch() {
-    const { searchText, data, originalData } = this.state;
-    const reg = new RegExp(searchText, 'gi');
+    const { pieceText, composerText, data, originalData } = this.state;
+    const regPiece = new RegExp(pieceText, 'gi');
+    const regComposer = new RegExp(composerText, 'gi');
     console.log('data:', data)
     this.setState({
       filterDropdownVisible: false,
-      filtered: !!searchText,
+      filtered: !!pieceText,
       data: originalData.map((record) => {
-        const match = record.piece.match(reg);
+        const match = record.piece.match(regPiece) && record.composer.match(regComposer);
         if (!match) {
           return null;
         }
@@ -46,15 +60,16 @@ class App extends React.Component {
           ...record,
           name: (
             <span>
-              {record.piece.split(reg).map((text, i) => (
+              {/* {record.piece.split(reg).map((text, i) => (
                 i > 0 ? [<span className="highlight">{match[0]}</span>, text] : text
-              ))}
+              ))} */}
             </span>
           ),
         };
       }).filter(record => !!record),
     });
   }
+  
   render() {
     const columns = [
       {
@@ -66,30 +81,16 @@ class App extends React.Component {
         title: "Piece",
         dataIndex: "piece",
         key: "piece",
-        filterDropdown: (
-          <div className="custom-filter-dropdown">
-            <Input
-              ref={ele => this.searchInput = ele}
-              placeholder="Search piece"
-              value={this.state.searchText}
-              onChange={this.onInputChange}
-              onPressEnter={this.onSearch}
-            />
-            <Button type="primary" onClick={this.onSearch}>Search</Button>
-          </div>
-        ),
-        filterIcon: <Icon type="search" style={{ color: this.state.filtered ? '#108ee9' : '#aaa' }} />,
-        filterDropdownVisible: this.state.filterDropdownVisible,
-        onFilterDropdownVisibleChange: (visible) => {
-          this.setState({
-            filterDropdownVisible: visible,
-          }, () => this.searchInput && this.searchInput.focus());
-        },
       },
       {
         title: "Publisher",
         dataIndex: "publisher",
         key: "publisher"
+      },
+      {
+        title: "Category",
+        dataIndex: "category",
+        key: "category"
       },
       {
         title: "Difficulty",
@@ -98,7 +99,25 @@ class App extends React.Component {
       }
     ];
 
-    return <Table dataSource={this.state.data} columns={columns} />;
+    return <div>
+      <Input 
+        ref={ele => this.pieceInput = ele}
+        placeholder="Search piece"
+        value={this.state.pieceText}
+        onChange={this.onPieceChange}
+        // onPressEnter={this.onSearch}
+      />
+      <Input 
+        ref={ele => this.composerInput = ele}
+        placeholder="Search composer"
+        value={this.state.composerText}
+        onChange={this.onComposerChange}
+        // onPressEnter={this.onSearch}
+      />
+      <Button onClick={this.onSearch}>Search</Button>
+      <Table pagination={false} dataSource={this.state.data} columns={columns} />
+    </div>
+    ;
   }
 }
 

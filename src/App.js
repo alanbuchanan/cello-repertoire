@@ -4,7 +4,7 @@ import 'antd/dist/antd.css';
 import { Table, Input, Button, Icon, Select } from 'antd';
 const Option = Select.Option;
 
-class App extends React.Component {
+class App extends Component {
   constructor() {
     super()
     this.state = {
@@ -18,9 +18,8 @@ class App extends React.Component {
       composers: [],
       categories: [],
     };
-
-    this.onSearch = this.onSearch.bind(this);
   }
+
   componentDidMount() {
     const url =
       "https://raw.githubusercontent.com/alanbuchanan/cello-pieces/master/cello.json";
@@ -59,7 +58,7 @@ class App extends React.Component {
   onCategoryInputChange = (val) => {
     this.setState({ categoryText: val });
   }
-  onSearch() {
+  onSearch = () => {
     const { pieceText, composerText, categoryText, publisherText, data, originalData } = this.state;
     const regPiece = new RegExp(pieceText, 'gi');
     const regComposer = new RegExp(composerText, 'gi');
@@ -97,7 +96,8 @@ class App extends React.Component {
       {
         title: "Composer",
         dataIndex: "composer",
-        key: "composer"
+        key: "composer",
+        width: '20%',
       },
       {
         title: "Piece",
@@ -120,9 +120,14 @@ class App extends React.Component {
         key: "difficulty"
       },
       {
-        title: 'Amazon link',
+        title: '',
         key: 'amazon_link',
-        render: (item) => <a href={`https://www.amazon.co.uk/s/field-keywords=${item.composer}%20${item.piece}%20sheet%20music`}>Amazon</a>
+        render: item => <a href={`https://www.amazon.co.uk/s/field-keywords=${item.composer}%20${item.piece}%20sheet%20music`}><Icon type="shopping-cart" /></a>
+      },
+      {
+        title: '',
+        key: 'imslp_link',
+        render: item => <a href={`https://www.google.co.uk/search?q=imslp+${item.composer}+${item.piece}`}><Icon type="book" /></a>
       }
     ];
 

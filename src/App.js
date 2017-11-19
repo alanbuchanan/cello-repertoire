@@ -118,6 +118,11 @@ class App extends React.Component {
         title: "Difficulty",
         dataIndex: "difficulties",
         key: "difficulty"
+      },
+      {
+        title: 'Amazon link',
+        key: 'amazon_link',
+        render: (item) => <a href={`https://www.amazon.co.uk/s/field-keywords=${item.composer}%20${item.piece}%20sheet%20music`}>Amazon</a>
       }
     ];
 

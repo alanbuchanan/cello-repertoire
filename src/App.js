@@ -10,6 +10,7 @@ class App extends React.Component {
       filterDropdownVisible: false,
       pieceText: '',
       composerText: '',
+      publisherText: '',
       filtered: false,
     };
 
@@ -32,15 +33,16 @@ class App extends React.Component {
     this.setState({ [prop]: e.target.value });
   }
   onSearch() {
-    const { pieceText, composerText, data, originalData } = this.state;
+    const { pieceText, composerText, publisherText, data, originalData } = this.state;
     const regPiece = new RegExp(pieceText, 'gi');
     const regComposer = new RegExp(composerText, 'gi');
+    const regPublisher = new RegExp(publisherText, 'gi');
     console.log('data:', data)
     this.setState({
       filterDropdownVisible: false,
       filtered: !!pieceText,
       data: originalData.map((record) => {
-        const match = record.piece.match(regPiece) && record.composer.match(regComposer);
+        const match = record.piece.match(regPiece) && record.composer.match(regComposer) && record.publisher.match(regPublisher);
         if (!match) {
           return null;
         }
@@ -93,14 +95,21 @@ class App extends React.Component {
         placeholder="Search piece"
         value={this.state.pieceText}
         onChange={(e) => this.onInputChange(e, 'pieceText')}
-        // onPressEnter={this.onSearch}
-      />
+        onPressEnter={this.onSearch}
+        />
       <Input 
         ref={ele => this.composerInput = ele}
         placeholder="Search composer"
         value={this.state.composerText}
         onChange={(e) => this.onInputChange(e, 'composerText')}
-        // onPressEnter={this.onSearch}
+        onPressEnter={this.onSearch}
+      />
+      <Input 
+        ref={ele => this.publisherInput = ele}
+        placeholder="Search publisher"
+        value={this.state.publisherText}
+        onChange={(e) => this.onInputChange(e, 'publisherText')}
+        onPressEnter={this.onSearch}
       />
       <Button onClick={this.onSearch}>Search</Button>
       <Table pagination={false} dataSource={this.state.data} columns={columns} />

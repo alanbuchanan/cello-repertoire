@@ -145,51 +145,50 @@ class App extends Component {
 
     return <div>
       <Row gutter={10}>
-        <Col span={4}>
-          <Select
-            showSearch
-            style={{ width: 200 }}
-            placeholder="Search composer"
-            optionFilterProp="children"
-            ref={ele => this.composerInput = ele}
-            onChange={val => this.onComposerInputChange(val)}
-            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-          >
-            {this.state.composers.length > 0 && this.state.composers.map(composer => <Option value={composer}>{composer}</Option>)}
-          </Select>
-        </Col>
-        <Col span={4}>
-          <Input
-            ref={ele => this.pieceInput = ele}
-            placeholder="Search piece"
-            value={this.state.pieceText}
-            onChange={(e) => this.onInputChange(e, 'pieceText')}
-            onPressEnter={this.onSearch}
-          />
-        </Col>
-      
-        <Col span={4}>
-          <Select
-            showSearch
-            style={{ width: 200 }}
-            placeholder="Select a category"
-            optionFilterProp="children"
-            ref={ele => this.categoryInput = ele}
-            onChange={val => this.onCategoryInputChange(val)}
-            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-          >
-            {this.state.categories.length > 0 && this.state.categories.map(category => <Option value={category}>{category}</Option>)}
-          </Select>
-        </Col>
-        <Col span={4}>
-          <Input
-            ref={ele => this.publisherInput = ele}
-            placeholder="Search publisher"
-            value={this.state.publisherText}
-            onChange={(e) => this.onInputChange(e, 'publisherText')}
-            onPressEnter={this.onSearch}
-          />
-        </Col>
+        <Select
+          style={{ width: 200, margin: 20 }}
+          showSearch
+          placeholder="Search composer"
+          optionFilterProp="children"
+          ref={ele => this.composerInput = ele}
+          onChange={val => this.onComposerInputChange(val)}
+          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+          {this.state.composers.length > 0 && this.state.composers.map(composer => <Option value={composer}>{composer}</Option>)}
+        </Select>
+      </Row>
+      <Row gutter={10}>
+        <Input
+          style={{ width: 200, margin: 20 }}
+          ref={ele => this.pieceInput = ele}
+          placeholder="Search piece"
+          value={this.state.pieceText}
+          onChange={(e) => this.onInputChange(e, 'pieceText')}
+          onPressEnter={this.onSearch}
+        />
+      </Row>
+      <Row gutter={10}>
+        <Select
+          style={{ width: 200, margin: 20 }}
+          showSearch
+          placeholder="Select a category"
+          optionFilterProp="children"
+          ref={ele => this.categoryInput = ele}
+          onChange={val => this.onCategoryInputChange(val)}
+          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
+          {this.state.categories.length > 0 && this.state.categories.map(category => <Option value={category}>{category}</Option>)}
+        </Select>
+      </Row>
+      <Row gutter={10}>
+        <Input
+          style={{ width: 200, margin: 20 }}
+          ref={ele => this.publisherInput = ele}
+          placeholder="Search publisher"
+          value={this.state.publisherText}
+          onChange={(e) => this.onInputChange(e, 'publisherText')}
+          onPressEnter={this.onSearch}
+        />
       </Row>
       <Button type="primary" onClick={this.onSearch}>Search</Button>
       <Button onClick={this.onReset}>Reset</Button>

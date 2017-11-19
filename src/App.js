@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import 'antd/dist/antd.css';
-import { Table, Input, Button, Icon, Select } from 'antd';
+import { Table, Input, Button, Icon, Select, Row, Col } from 'antd';
 const Option = Select.Option;
 
 class App extends Component {
   constructor() {
-    super()
+    super();
+    this.setInitialState();
+  }
+
+  setInitialState() {
     this.state = {
       data: [],
-      filterDropdownVisible: false,
       pieceText: '',
       composerText: '',
       categoryText: '',
@@ -20,7 +23,7 @@ class App extends Component {
     };
   }
 
-  componentDidMount() {
+  getData() {
     const url =
       "https://raw.githubusercontent.com/alanbuchanan/cello-pieces/master/cello.json";
 
@@ -49,6 +52,10 @@ class App extends Component {
         });
       });
   }
+
+  componentDidMount() {
+    this.getData();
+  }
   onInputChange = (e, prop) => {
     this.setState({ [prop]: e.target.value });
   }
@@ -69,7 +76,7 @@ class App extends Component {
       filterDropdownVisible: false,
       filtered: !!pieceText,
       data: originalData.map((record) => {
-        const match = record.piece.match(regPiece) 
+        const match = record.piece.match(regPiece)
           && record.composer.match(regComposer)
           && record.publisher.match(regPublisher)
           && record.category.match(regCategory);
@@ -89,6 +96,11 @@ class App extends Component {
         };
       }).filter(record => !!record),
     });
+  }
+
+  onReset = () => {
+    this.setInitialState();
+    this.getData();
   }
 
   render() {
@@ -132,43 +144,55 @@ class App extends Component {
     ];
 
     return <div>
-      <Input
-        ref={ele => this.pieceInput = ele}
-        placeholder="Search piece"
-        value={this.state.pieceText}
-        onChange={(e) => this.onInputChange(e, 'pieceText')}
-        onPressEnter={this.onSearch}
-      />
-      <Select
-        showSearch
-        style={{ width: 200 }}
-        placeholder="Select a composer"
-        optionFilterProp="children"
-        ref={ele => this.composerInput = ele}
-        onChange={val => this.onComposerInputChange(val)}
-        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-      >
-        {this.state.composers.length > 0 && this.state.composers.map(composer => <Option value={composer}>{composer}</Option>)}
-      </Select>
-      <Select
-        showSearch
-        style={{ width: 200 }}
-        placeholder="Select a category"
-        optionFilterProp="children"
-        ref={ele => this.categoryInput = ele}
-        onChange={val => this.onCategoryInputChange(val)}
-        filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-      >
-        {this.state.categories.length > 0 && this.state.categories.map(category => <Option value={category}>{category}</Option>)}
-      </Select>
-      <Input
-        ref={ele => this.publisherInput = ele}
-        placeholder="Search publisher"
-        value={this.state.publisherText}
-        onChange={(e) => this.onInputChange(e, 'publisherText')}
-        onPressEnter={this.onSearch}
-      />
-      <Button onClick={this.onSearch}>Search</Button>
+      <Row gutter={10}>
+        <Col span={4}>
+          <Select
+            showSearch
+            style={{ width: 200 }}
+            placeholder="Search composer"
+            optionFilterProp="children"
+            ref={ele => this.composerInput = ele}
+            onChange={val => this.onComposerInputChange(val)}
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          >
+            {this.state.composers.length > 0 && this.state.composers.map(composer => <Option value={composer}>{composer}</Option>)}
+          </Select>
+        </Col>
+        <Col span={4}>
+          <Input
+            ref={ele => this.pieceInput = ele}
+            placeholder="Search piece"
+            value={this.state.pieceText}
+            onChange={(e) => this.onInputChange(e, 'pieceText')}
+            onPressEnter={this.onSearch}
+          />
+        </Col>
+      
+        <Col span={4}>
+          <Select
+            showSearch
+            style={{ width: 200 }}
+            placeholder="Select a category"
+            optionFilterProp="children"
+            ref={ele => this.categoryInput = ele}
+            onChange={val => this.onCategoryInputChange(val)}
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          >
+            {this.state.categories.length > 0 && this.state.categories.map(category => <Option value={category}>{category}</Option>)}
+          </Select>
+        </Col>
+        <Col span={4}>
+          <Input
+            ref={ele => this.publisherInput = ele}
+            placeholder="Search publisher"
+            value={this.state.publisherText}
+            onChange={(e) => this.onInputChange(e, 'publisherText')}
+            onPressEnter={this.onSearch}
+          />
+        </Col>
+      </Row>
+      <Button type="primary" onClick={this.onSearch}>Search</Button>
+      <Button onClick={this.onReset}>Reset</Button>
       <Table pagination={false} dataSource={this.state.data} columns={columns} />
     </div>
       ;

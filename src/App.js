@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import 'antd/dist/antd.css';
-import { Table, Input, Button, Icon, Select, Row, Col } from 'antd';
+import { Table, Input, Button, Icon, Select, Row, Col, Slider } from 'antd';
 const Option = Select.Option;
 
 class App extends Component {
@@ -20,6 +20,8 @@ class App extends Component {
       filtered: false,
       composers: [],
       categories: [],
+      minDifficulty: 1,
+      maxDifficulty: 12,
     };
   }
 
@@ -66,11 +68,13 @@ class App extends Component {
     this.setState({ categoryText: val });
   }
   onSearch = () => {
-    const { pieceText, composerText, categoryText, publisherText, data, originalData } = this.state;
+    const { pieceText, composerText, categoryText, publisherText, data, originalData, minDifficulty, maxDifficulty } = this.state;
     const regPiece = new RegExp(pieceText, 'gi');
     const regComposer = new RegExp(composerText, 'gi');
     const regPublisher = new RegExp(publisherText, 'gi');
     const regCategory = new RegExp(categoryText, 'gi');
+
+
 
     this.setState({
       filterDropdownVisible: false,
@@ -79,7 +83,8 @@ class App extends Component {
         const match = record.piece.match(regPiece)
           && record.composer.match(regComposer)
           && record.publisher.match(regPublisher)
-          && record.category.match(regCategory);
+          && record.category.match(regCategory)
+          && _.first(record.difficulties) >= minDifficulty && _.last(record.difficulties) <= maxDifficulty
 
         if (!match) {
           return null;
@@ -101,6 +106,13 @@ class App extends Component {
   onReset = () => {
     this.setInitialState();
     this.getData();
+  }
+
+  onDifficultySliderChange = (arr) => {
+    this.setState({
+      minDifficulty: arr[0],
+      maxDifficulty: arr[1]
+    });
   }
 
   render() {
@@ -129,7 +141,8 @@ class App extends Component {
       {
         title: "Difficulty",
         dataIndex: "difficulties",
-        key: "difficulty"
+        key: "difficulty",
+        render: (item) => <span>{item.length > 1 ? `${_.first(item)} - ${_.last(item)}` : _.first(item)}</span>
       },
       {
         title: '',
@@ -189,6 +202,10 @@ class App extends Component {
           onChange={(e) => this.onInputChange(e, 'publisherText')}
           onPressEnter={this.onSearch}
         />
+      </Row>
+      <Row gutter={10}>
+        <label>Select difficulty:</label>
+        <Slider style={{width: 200}} range min={1} max={12} defaultValue={[1, 12]} onAfterChange={this.onDifficultySliderChange} />
       </Row>
       <Button type="primary" onClick={this.onSearch}>Search</Button>
       <Button onClick={this.onReset}>Reset</Button>

@@ -205,11 +205,16 @@ class App extends Component {
       </Row>
       <Row gutter={10}>
         <label>Select difficulty:</label>
-        <Slider style={{width: 200}} range min={1} max={12} defaultValue={[1, 12]} onAfterChange={this.onDifficultySliderChange} />
+        <Slider style={{ width: 200 }} range min={1} max={12} defaultValue={[1, 12]} onAfterChange={this.onDifficultySliderChange} />
       </Row>
       <Button type="primary" onClick={this.onSearch}>Search</Button>
       <Button onClick={this.onReset}>Reset</Button>
-      <Table pagination={false} dataSource={this.state.data} columns={columns} />
+      <Table
+        pagination={false}
+        dataSource={this.state.data}
+        columns={columns}
+        onRowDoubleClick={item => window.location.href = `https://www.google.co.uk/search?q=imslp+${item.composer}+${item.piece}`}
+      />
     </div>
       ;
   }

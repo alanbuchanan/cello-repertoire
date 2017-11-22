@@ -166,6 +166,7 @@ class App extends Component {
           ref={ele => this.composerInput = ele}
           onChange={val => this.onComposerInputChange(val)}
           filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          onBlur={this.onSearch}
         >
           {this.state.composers.length > 0 && this.state.composers.map(composer => <Option value={composer}>{composer}</Option>)}
         </Select>
@@ -177,7 +178,7 @@ class App extends Component {
           placeholder="Search piece"
           value={this.state.pieceText}
           onChange={(e) => this.onInputChange(e, 'pieceText')}
-          onPressEnter={this.onSearch}
+          onBlur={this.onSearch}
         />
       </Row>
       <Row gutter={10}>
@@ -189,6 +190,7 @@ class App extends Component {
           ref={ele => this.categoryInput = ele}
           onChange={val => this.onCategoryInputChange(val)}
           filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          onBlur={this.onSearch}
         >
           {this.state.categories.length > 0 && this.state.categories.map(category => <Option value={category}>{category}</Option>)}
         </Select>
@@ -200,12 +202,20 @@ class App extends Component {
           placeholder="Search publisher"
           value={this.state.publisherText}
           onChange={(e) => this.onInputChange(e, 'publisherText')}
-          onPressEnter={this.onSearch}
+          onBlur={this.onSearch}
         />
       </Row>
       <Row gutter={10}>
         <label>Select difficulty:</label>
-        <Slider style={{ width: 200 }} range min={1} max={12} defaultValue={[1, 12]} onAfterChange={this.onDifficultySliderChange} />
+        <Slider
+          style={{ width: 200 }}
+          range
+          min={1}
+          max={12}
+          defaultValue={[1, 12]}
+          onChange={this.onDifficultySliderChange}
+          onAfterChange={this.onSearch}
+        />
       </Row>
       <Button type="primary" onClick={this.onSearch}>Search</Button>
       <Button onClick={this.onReset}>Reset</Button>

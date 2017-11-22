@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import 'antd/dist/antd.css';
-import { Table, Input, Button, Icon, Select, Row, Col, Slider } from 'antd';
+import { Table, Input, Button, Icon, Select, Row, Col, Slider, Pagination } from 'antd';
 const Option = Select.Option;
 
 class App extends Component {
@@ -147,12 +147,12 @@ class App extends Component {
       {
         title: '',
         key: 'amazon_link',
-        render: item => <a href={`https://www.amazon.co.uk/s/field-keywords=${item.composer}%20${item.piece}%20sheet%20music`}><Icon type="shopping-cart" /></a>
+        render: item => <a href={`https://www.amazon.co.uk/s/field-keywords=${item.composer}%20${item.piece}%20cello%20sheet%20music`}><Icon type="shopping-cart" /></a>
       },
       {
         title: '',
         key: 'imslp_link',
-        render: item => <a href={`https://www.google.co.uk/search?q=imslp+${item.composer}+${item.piece}`}><Icon type="book" /></a>
+        render: item => <a href={`https://www.google.co.uk/search?q=imslp+${item.composer}+${item.piece}+cello`}><Icon type="book" /></a>
       }
     ];
 
@@ -220,7 +220,7 @@ class App extends Component {
       <Button type="primary" onClick={this.onSearch}>Search</Button>
       <Button onClick={this.onReset}>Reset</Button>
       <Table
-        pagination={false}
+        pagination={{defaultPageSize: 25}}
         dataSource={this.state.data}
         columns={columns}
         onRowDoubleClick={item => window.location.href = `https://www.google.co.uk/search?q=imslp+${item.composer}+${item.piece}`}

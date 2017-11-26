@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import 'antd/dist/antd.css';
-import { Table, Input, Button, Icon, Select, Row, Col, Slider, Pagination } from 'antd';
+import { Table, Input, Button, Icon, Select, Row, Col, Slider, Pagination, Radio } from 'antd';
 const Option = Select.Option;
 
 class App extends Component {
@@ -22,10 +22,13 @@ class App extends Component {
       categories: [],
       minDifficulty: 1,
       maxDifficulty: 12,
+      isDifficultyRange: false,
+      loading: true,
     };
   }
 
   getData() {
+    this.setState({ loading: true });
     const url =
       "https://raw.githubusercontent.com/alanbuchanan/cello-pieces/master/cello.json";
 
@@ -33,6 +36,7 @@ class App extends Component {
       .then(resp => resp.json())
       .then(data => {
         this.setState({
+          loading: false,
           data: data,
           originalData: data,
           composers: _
@@ -74,8 +78,6 @@ class App extends Component {
     const regPublisher = new RegExp(publisherText, 'gi');
     const regCategory = new RegExp(categoryText, 'gi');
 
-
-
     this.setState({
       filterDropdownVisible: false,
       filtered: !!pieceText,
@@ -105,7 +107,7 @@ class App extends Component {
 
   onReset = () => {
     this.setInitialState();
-    this.getData();
+    setTimeout(() => this.getData(), 200)
   }
 
   onDifficultySliderChange = (arr) => {
@@ -115,6 +117,27 @@ class App extends Component {
     });
   }
 
+  getDifficultyColor(num) {
+    const colors = {
+      1: '#00d145',
+      2: '#29d100',
+      3: '#29d100',
+      4: '#29d100',
+      5: '#29d100',
+      6: '#d1cd00',
+      7: '#d1cd00',
+      8: '#d1cd00',
+      9: '#d1cd00',
+      10: '#d10000',
+      11: '#d10000',
+      12: '#d10000',
+      13: '#a00000'
+    }
+    return {
+      color: colors[num]
+    }
+  }
+
   render() {
     const columns = [
       {
@@ -122,27 +145,34 @@ class App extends Component {
         dataIndex: "composer",
         key: "composer",
         width: '20%',
+        sorter: (a, b) => a.composer > b.composer,
       },
       {
         title: "Piece",
         dataIndex: "piece",
         key: "piece",
+        sorter: (a, b) => a.piece > b.piece,
       },
       {
         title: "Publisher",
         dataIndex: "publisher",
-        key: "publisher"
+        key: "publisher",
+        sorter: (a, b) => a.publisher > b.publisher,
       },
       {
         title: "Category",
         dataIndex: "category",
-        key: "category"
+        key: "category",
+        sorter: (a, b) => a.category > b.category,
       },
       {
         title: "Difficulty",
         dataIndex: "difficulties",
         key: "difficulty",
-        render: (item) => <span>{item.length > 1 ? `${_.first(item)} - ${_.last(item)}` : _.first(item)}</span>
+        render: (item) => <span style={this.getDifficultyColor(_.first(item))}>{item.length > 1 ? `${_.first(item)} - ${_.last(item)}` : _.first(item)}</span>,
+        sorter: (a, b) => {
+          return a.difficulties[0] > b.difficulties[0];
+        },
       },
       {
         title: '',
@@ -211,8 +241,8 @@ class App extends Component {
           style={{ width: 200 }}
           range
           min={1}
-          max={12}
-          defaultValue={[1, 12]}
+          max={13}
+          defaultValue={[1, 13]}
           onChange={this.onDifficultySliderChange}
           onAfterChange={this.onSearch}
         />
@@ -220,10 +250,18 @@ class App extends Component {
       <Button type="primary" onClick={this.onSearch}>Search</Button>
       <Button onClick={this.onReset}>Reset</Button>
       <Table
-        pagination={{defaultPageSize: 25}}
+        pagination={{ defaultPageSize: 25 }}
         dataSource={this.state.data}
         columns={columns}
-        onRowDoubleClick={item => window.location.href = `https://www.google.co.uk/search?q=imslp+${item.composer}+${item.piece}`}
+        onChange={this.onChange}
+        loading={this.state.loading}
+        locale={{
+          emptyText: 'Nothing found'
+        }}
+        style={{
+          width: '90%',
+          margin: '0 auto',
+        }}
       />
     </div>
       ;

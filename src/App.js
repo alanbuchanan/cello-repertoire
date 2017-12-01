@@ -138,6 +138,21 @@ class App extends Component {
     }
   }
 
+  alphabeticalSorter(a, b) {
+    var nameA = a.toUpperCase();
+    var nameB = b.toUpperCase();
+
+    if (nameA < nameB) {
+      return -1;
+    }
+
+    if (nameA > nameB) {
+      return 1;
+    }
+  
+    return 0;
+  }
+
   render() {
     const columns = [
       {
@@ -145,25 +160,25 @@ class App extends Component {
         dataIndex: "composer",
         key: "composer",
         width: '20%',
-        sorter: (a, b) => a.composer > b.composer,
+        sorter: (a, b) => this.alphabeticalSorter(a.composer, b.composer),
       },
       {
         title: "Piece",
         dataIndex: "piece",
         key: "piece",
-        sorter: (a, b) => a.piece > b.piece,
+        sorter: (a, b) => this.alphabeticalSorter(a.piece, b.piece),
       },
       {
         title: "Publisher",
         dataIndex: "publisher",
         key: "publisher",
-        sorter: (a, b) => a.publisher > b.publisher,
+        sorter: (a, b) => this.alphabeticalSorter(a.publisher, b.publisher),
       },
       {
         title: "Category",
         dataIndex: "category",
         key: "category",
-        sorter: (a, b) => a.category > b.category,
+        sorter: (a, b) => this.alphabeticalSorter(a.category, b.category),
       },
       {
         title: "Difficulty",
@@ -171,7 +186,7 @@ class App extends Component {
         key: "difficulty",
         render: (item) => <span style={this.getDifficultyColor(_.first(item))}>{item.length > 1 ? `${_.first(item)} - ${_.last(item)}` : _.first(item)}</span>,
         sorter: (a, b) => {
-          return a.difficulties[0] > b.difficulties[0];
+          return a.difficulties[0] - b.difficulties[0];
         },
       },
       {

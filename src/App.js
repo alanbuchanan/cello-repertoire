@@ -261,7 +261,7 @@ class App extends Component {
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 6 },
+        sm: { span: 2 },
       },
       wrapperCol: {
         xs: { span: 24 },
@@ -277,7 +277,7 @@ class App extends Component {
         },
         sm: {
           span: 14,
-          offset: 6,
+          offset: 2,
         },
       },
     };

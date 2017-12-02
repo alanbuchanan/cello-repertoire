@@ -40,7 +40,7 @@ class App extends Component {
             }, [])
             .uniq()
             .value()
-            .sort(),
+            .sort((a, b) => this.alphabeticalSorter(a, b)),
           categories: _
             .chain(data)
             .reduce((acc, cur) => {
@@ -48,7 +48,7 @@ class App extends Component {
             }, [])
             .uniq()
             .value()
-            .sort()
+            .sort((a, b) => this.alphabeticalSorter(a, b)),
         });
       });
   }
@@ -295,6 +295,14 @@ class App extends Component {
       }
     }
 
+    const deleteIconProps = {
+      style: {
+        cursor: 'pointer',
+      },
+      className: "dynamic-delete-button",
+      type: "minus-circle-o",
+    }
+
     return <div {...containerLayout}>
       <h1 style={{ marginBottom: '20px' }}>Cello Repertoire Search</h1>
 
@@ -316,8 +324,7 @@ class App extends Component {
           {this.state.composers.length > 0 && this.state.composers.map(composer => <Option key={composer} value={composer}>{composer}</Option>)}
         </Select>
         <Icon
-          className="dynamic-delete-button"
-          type="minus-circle-o"
+          {...deleteIconProps}
           onClick={() => this.emptyStateFieldAndUpdateTable('composerText')}
         />
       </FormItem>
@@ -335,8 +342,7 @@ class App extends Component {
           {...inputWithRemoveIconLayout}
         />
         <Icon
-          className="dynamic-delete-button"
-          type="minus-circle-o"
+          {...deleteIconProps}
           onClick={() => this.emptyStateFieldAndUpdateTable('pieceText')}
         />
       </FormItem>
@@ -359,8 +365,7 @@ class App extends Component {
           {this.state.categories.length > 0 && this.state.categories.map(category => <Option key={category} value={category}>{category}</Option>)}
         </Select>
         <Icon
-          className="dynamic-delete-button"
-          type="minus-circle-o"
+          {...deleteIconProps}
           onClick={() => this.emptyStateFieldAndUpdateTable('categoryText')}
         />
       </FormItem>
@@ -378,8 +383,7 @@ class App extends Component {
           {...inputWithRemoveIconLayout}
         />
         <Icon
-          className="dynamic-delete-button"
-          type="minus-circle-o"
+          {...deleteIconProps}
           onClick={() => this.emptyStateFieldAndUpdateTable('publisherText')}
         />
       </FormItem>

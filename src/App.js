@@ -73,7 +73,6 @@ class App extends Component {
   }
 
   onComposerInputChange = (val) => {
-    console.log('val:', val)
     this.setState({ composerText: val });
     this.triggerDelayedSearch();
   }
@@ -107,7 +106,10 @@ class App extends Component {
           && record.composer.match(regComposer)
           && record.publisher.match(regPublisher)
           && record.category.match(regCategory)
-          && record.difficulties.includes(minDifficulty) || record.difficulties.includes(maxDifficulty)
+          && (
+            _.range(minDifficulty, maxDifficulty + 1).includes(_.first(record.difficulties)) ||
+            _.range(minDifficulty, maxDifficulty + 1).includes(_.last(record.difficulties))
+          )
 
         if (!match) {
           return null;
@@ -179,10 +181,6 @@ class App extends Component {
     }
 
     return 0;
-  }
-
-  removeComposer() {
-    console.log('remove comoser')
   }
 
   render() {

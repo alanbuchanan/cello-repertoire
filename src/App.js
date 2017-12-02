@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import 'antd/dist/antd.css';
-import { Table, Input, Button, Icon, Select, Row, Col, Slider, Pagination, Radio, Tooltip } from 'antd';
+import { Table, Input, Button, Icon, Select, Row, Col, Slider, Pagination, Radio, Tooltip, Form } from 'antd';
+const FormItem = Form.Item;
 const Option = Select.Option;
 
 class App extends Component {
@@ -149,11 +150,17 @@ class App extends Component {
     if (nameA > nameB) {
       return 1;
     }
-  
+
     return 0;
   }
 
   render() {
+    const linkLayout = {
+      style: {
+        paddingRight: '10px',
+      }
+    }
+
     const columns = [
       {
         title: "Composer",
@@ -190,26 +197,53 @@ class App extends Component {
         },
       },
       {
-        title: '',
-        key: 'amazon_link',
-        render: item => <Tooltip placement="bottom" title="Amazon"><a href={`https://www.amazon.co.uk/s/field-keywords=${item.composer}%20${item.piece}%20cello%20sheet%20music`}><Icon type="shopping-cart" /></a></Tooltip>
+        title: 'Links',
+        key: 'links',
+        render: item => <div>
+          <span {...linkLayout}><Tooltip placement="bottom" title="Amazon"><a href={`https://www.amazon.co.uk/s/field-keywords=${item.composer}%20${item.piece}%20cello%20sheet%20music`}><Icon type="shopping-cart" /></a></Tooltip></span>
+          <span {...linkLayout}><Tooltip placement="bottom" title="IMSLP"><a href={`https://www.google.co.uk/search?q=imslp+${item.composer}+${item.piece}+cello`}><Icon type="book" /></a></Tooltip></span>
+          <span>{item.category !== 'Methods/Studies/Scale books' && <Tooltip placement="bottom" title="YouTube"><a href={`https://www.youtube.com/results?search_query=${item.composer}+${item.piece}+cello`}><Icon type="play-circle-o" /></a></Tooltip>}</span>
+        </div>
       },
-      {
-        title: '',
-        key: 'imslp_link',
-        render: item => <Tooltip placement="bottom" title="IMSLP"><a href={`https://www.google.co.uk/search?q=imslp+${item.composer}+${item.piece}+cello`}><Icon type="book" /></a></Tooltip>
-      },
-      {
-        title: '',
-        key: 'youtube_link',
-        render: item => item.category !== 'Methods/Studies/Scale books' && <Tooltip placement="bottom" title="YouTube"><a href={`https://www.youtube.com/results?search_query=${item.composer}+${item.piece}+cello`}><Icon type="play-circle-o" /></a></Tooltip>
-      }
     ];
 
-    return <div>
-      <Row gutter={10}>
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 6 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 14 },
+      },
+    };
+
+    const tailFormItemLayout = {
+      wrapperCol: {
+        xs: {
+          span: 24,
+          offset: 0,
+        },
+        sm: {
+          span: 14,
+          offset: 6,
+        },
+      },
+    };
+
+    const containerLayout = {
+      style: {
+        padding: '20px',
+      }
+    };
+
+    return <div {...containerLayout}>
+      <FormItem
+        {...formItemLayout}
+        label="Composer"
+      >
         <Select
-          style={{ width: 200, margin: 20 }}
+          style={{ width: 200 }}
           showSearch
           placeholder="Search composer"
           optionFilterProp="children"
@@ -220,20 +254,25 @@ class App extends Component {
         >
           {this.state.composers.length > 0 && this.state.composers.map(composer => <Option value={composer}>{composer}</Option>)}
         </Select>
-      </Row>
-      <Row gutter={10}>
+      </FormItem>
+      <FormItem
+        {...formItemLayout}
+        label="Piece"
+      >
         <Input
-          style={{ width: 200, margin: 20 }}
           ref={ele => this.pieceInput = ele}
           placeholder="Search piece"
           value={this.state.pieceText}
           onChange={(e) => this.onInputChange(e, 'pieceText')}
           onBlur={this.onSearch}
         />
-      </Row>
-      <Row gutter={10}>
+      </FormItem>
+      <FormItem
+        {...formItemLayout}
+        label="Category"
+      >
         <Select
-          style={{ width: 200, margin: 20 }}
+          style={{ width: 200 }}
           showSearch
           placeholder="Select a category"
           optionFilterProp="children"
@@ -244,19 +283,23 @@ class App extends Component {
         >
           {this.state.categories.length > 0 && this.state.categories.map(category => <Option value={category}>{category}</Option>)}
         </Select>
-      </Row>
-      <Row gutter={10}>
+      </FormItem>
+      <FormItem
+        {...formItemLayout}
+        label="Publisher"
+      >
         <Input
-          style={{ width: 200, margin: 20 }}
           ref={ele => this.publisherInput = ele}
           placeholder="Search publisher"
           value={this.state.publisherText}
           onChange={(e) => this.onInputChange(e, 'publisherText')}
           onBlur={this.onSearch}
         />
-      </Row>
-      <Row gutter={10}>
-        <label>Select difficulty:</label>
+      </FormItem>
+      <FormItem
+        {...formItemLayout}
+        label="Difficulty"
+      >
         <Slider
           style={{ width: 200 }}
           range
@@ -266,9 +309,13 @@ class App extends Component {
           onChange={this.onDifficultySliderChange}
           onAfterChange={this.onSearch}
         />
-      </Row>
-      <Button type="primary" onClick={this.onSearch}>Search</Button>
-      <Button onClick={this.onReset}>Reset</Button>
+      </FormItem>
+      <FormItem
+        {...tailFormItemLayout}
+      >
+        <Button type="primary" onClick={this.onSearch}>Search</Button>
+        <Button onClick={this.onReset}>Reset</Button>
+      </FormItem>
       <Table
         pagination={{ defaultPageSize: 25 }}
         dataSource={this.state.data}
@@ -277,10 +324,6 @@ class App extends Component {
         loading={this.state.loading}
         locale={{
           emptyText: 'Nothing found'
-        }}
-        style={{
-          width: '90%',
-          margin: '0 auto',
         }}
       />
     </div>

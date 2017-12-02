@@ -63,15 +63,32 @@ class App extends Component {
   componentDidMount() {
     this.getData();
   }
+
   onInputChange = (e, prop) => {
     this.setState({ [prop]: e.target.value });
+    this.triggerDelayedSearch();
   }
+
   onComposerInputChange = (val) => {
+    console.log('val:', val)
     this.setState({ composerText: val });
+    this.triggerDelayedSearch();
   }
+
   onCategoryInputChange = (val) => {
     this.setState({ categoryText: val });
+    this.triggerDelayedSearch();
   }
+
+  emptyStateFieldAndUpdateTable(field) {
+    this.setState({ [field]: '' });
+    this.triggerDelayedSearch();
+  }
+
+  triggerDelayedSearch() {
+    setTimeout(() => this.onSearch(), 100)
+  }
+
   onSearch = () => {
     const { pieceText, composerText, categoryText, publisherText, data, originalData, minDifficulty, maxDifficulty } = this.state;
     const regPiece = new RegExp(pieceText, 'gi');
@@ -154,6 +171,10 @@ class App extends Component {
     return 0;
   }
 
+  removeComposer() {
+    console.log('remove comoser')
+  }
+
   render() {
     const linkLayout = {
       style: {
@@ -200,9 +221,28 @@ class App extends Component {
         title: 'Links',
         key: 'links',
         render: item => <div>
-          <span {...linkLayout}><Tooltip placement="bottom" title="Amazon"><a href={`https://www.amazon.co.uk/s/field-keywords=${item.composer}%20${item.piece}%20cello%20sheet%20music`}><Icon type="shopping-cart" /></a></Tooltip></span>
-          <span {...linkLayout}><Tooltip placement="bottom" title="IMSLP"><a href={`https://www.google.co.uk/search?q=imslp+${item.composer}+${item.piece}+cello`}><Icon type="book" /></a></Tooltip></span>
-          <span>{item.category !== 'Methods/Studies/Scale books' && <Tooltip placement="bottom" title="YouTube"><a href={`https://www.youtube.com/results?search_query=${item.composer}+${item.piece}+cello`}><Icon type="play-circle-o" /></a></Tooltip>}</span>
+          <span {...linkLayout}>
+            <Tooltip placement="bottom" title="Amazon">
+              <a href={`https://www.amazon.com/s/field-keywords=${item.composer}%20${item.piece}%20cello%20sheet%20music`}>
+                <Icon type="shopping-cart" />
+              </a>
+            </Tooltip>
+          </span>
+          <span {...linkLayout}>
+            <Tooltip placement="bottom" title="IMSLP">
+              <a href={`https://www.google.co.uk/search?q=imslp+${item.composer}+${item.piece}+cello`}>
+                <Icon type="book" />
+              </a>
+            </Tooltip>
+          </span>
+          <span>
+            {item.category !== 'Methods/Studies/Scale books' && (
+              <Tooltip placement="bottom" title="YouTube">
+                <a href={`https://www.youtube.com/results?search_query=${item.composer}+${item.piece}+cello`}>
+                  <Icon type="play-circle-o" />
+                </a>
+              </Tooltip>)}
+          </span>
         </div>
       },
     ];
@@ -237,13 +277,20 @@ class App extends Component {
       }
     };
 
+    const inputWithRemoveIconLayout = {
+      style: {
+        width: '50%',
+        marginRight: '8px',
+      }
+    }
+
     return <div {...containerLayout}>
       <FormItem
         {...formItemLayout}
         label="Composer"
       >
         <Select
-          style={{ width: 200 }}
+          value={this.state.composerText}
           showSearch
           placeholder="Search composer"
           optionFilterProp="children"
@@ -251,20 +298,33 @@ class App extends Component {
           onChange={val => this.onComposerInputChange(val)}
           filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           onBlur={this.onSearch}
+          {...inputWithRemoveIconLayout}
         >
           {this.state.composers.length > 0 && this.state.composers.map(composer => <Option value={composer}>{composer}</Option>)}
         </Select>
+        <Icon
+          className="dynamic-delete-button"
+          type="minus-circle-o"
+          onClick={() => this.emptyStateFieldAndUpdateTable('composerText')}
+        />
       </FormItem>
       <FormItem
         {...formItemLayout}
         label="Piece"
       >
         <Input
+          value={this.state.pieceText}
           ref={ele => this.pieceInput = ele}
           placeholder="Search piece"
           value={this.state.pieceText}
           onChange={(e) => this.onInputChange(e, 'pieceText')}
           onBlur={this.onSearch}
+          {...inputWithRemoveIconLayout}
+        />
+        <Icon
+          className="dynamic-delete-button"
+          type="minus-circle-o"
+          onClick={() => this.emptyStateFieldAndUpdateTable('pieceText')}
         />
       </FormItem>
       <FormItem
@@ -272,7 +332,7 @@ class App extends Component {
         label="Category"
       >
         <Select
-          style={{ width: 200 }}
+          value={this.state.categoryText}
           showSearch
           placeholder="Select a category"
           optionFilterProp="children"
@@ -280,20 +340,33 @@ class App extends Component {
           onChange={val => this.onCategoryInputChange(val)}
           filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           onBlur={this.onSearch}
+          {...inputWithRemoveIconLayout}
         >
           {this.state.categories.length > 0 && this.state.categories.map(category => <Option value={category}>{category}</Option>)}
         </Select>
+        <Icon
+          className="dynamic-delete-button"
+          type="minus-circle-o"
+          onClick={() => this.emptyStateFieldAndUpdateTable('categoryText')}
+        />
       </FormItem>
       <FormItem
         {...formItemLayout}
         label="Publisher"
       >
         <Input
+          value={this.state.publisherText}
           ref={ele => this.publisherInput = ele}
           placeholder="Search publisher"
           value={this.state.publisherText}
           onChange={(e) => this.onInputChange(e, 'publisherText')}
           onBlur={this.onSearch}
+          {...inputWithRemoveIconLayout}
+        />
+        <Icon
+          className="dynamic-delete-button"
+          type="minus-circle-o"
+          onClick={() => this.emptyStateFieldAndUpdateTable('publisherText')}
         />
       </FormItem>
       <FormItem
@@ -313,7 +386,7 @@ class App extends Component {
       <FormItem
         {...tailFormItemLayout}
       >
-        <Button type="primary" onClick={this.onSearch}>Search</Button>
+        <Button type="primary" onClick={this.onSearch} style={{ marginRight: '20px' }}>Search</Button>
         <Button onClick={this.onReset}>Reset</Button>
       </FormItem>
       <Table

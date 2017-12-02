@@ -198,6 +198,11 @@ class App extends Component {
         title: '',
         key: 'imslp_link',
         render: item => <a href={`https://www.google.co.uk/search?q=imslp+${item.composer}+${item.piece}+cello`}><Icon type="book" /></a>
+      },
+      {
+        title: '',
+        key: 'youtube_link',
+        render: item => <a href={`https://www.youtube.com/results?search_query=${item.composer}+${item.piece}+cello`}><Icon type="play-circle-o" /></a>
       }
     ];
 

@@ -182,36 +182,46 @@ class App extends Component {
       }
     }
 
+    const iconLayout = {
+      style: {
+        fontSize: '16px',
+      }
+    }
+
     const columns = [
       {
         title: "Composer",
         dataIndex: "composer",
         key: "composer",
-        width: '20%',
+        width: '15%',
         sorter: (a, b) => this.alphabeticalSorter(a.composer, b.composer),
       },
       {
         title: "Piece",
         dataIndex: "piece",
         key: "piece",
+        width: '25%',
         sorter: (a, b) => this.alphabeticalSorter(a.piece, b.piece),
       },
       {
         title: "Publisher",
         dataIndex: "publisher",
         key: "publisher",
+        width: '15%',
         sorter: (a, b) => this.alphabeticalSorter(a.publisher, b.publisher),
       },
       {
         title: "Category",
         dataIndex: "category",
         key: "category",
+        width: '25%',
         sorter: (a, b) => this.alphabeticalSorter(a.category, b.category),
       },
       {
         title: "Difficulty",
         dataIndex: "difficulties",
         key: "difficulty",
+        width: '8%',
         render: (item) => <span style={this.getDifficultyColor(_.first(item))}>{item.length > 1 ? `${_.first(item)} - ${_.last(item)}` : _.first(item)}</span>,
         sorter: (a, b) => {
           return a.difficulties[0] - b.difficulties[0] || a.difficulties.length - b.difficulties.length
@@ -220,18 +230,19 @@ class App extends Component {
       {
         title: 'Links',
         key: 'links',
+        width: '15%',
         render: item => <div>
           <span {...linkLayout}>
             <Tooltip placement="bottom" title="Amazon">
               <a href={`https://www.amazon.com/s/field-keywords=${item.composer}%20${item.piece}%20cello%20sheet%20music`}>
-                <Icon type="shopping-cart" />
+                <Icon {...iconLayout} type="shopping-cart" />
               </a>
             </Tooltip>
           </span>
           <span {...linkLayout}>
             <Tooltip placement="bottom" title="IMSLP">
               <a href={`https://www.google.co.uk/search?q=imslp+${item.composer}+${item.piece}+cello`}>
-                <Icon type="book" />
+                <Icon {...iconLayout} type="book" />
               </a>
             </Tooltip>
           </span>
@@ -239,7 +250,7 @@ class App extends Component {
             {item.category !== 'Methods/Studies/Scale books' && (
               <Tooltip placement="bottom" title="YouTube">
                 <a href={`https://www.youtube.com/results?search_query=${item.composer}+${item.piece}+cello`}>
-                  <Icon type="play-circle-o" />
+                  <Icon {...iconLayout} type="play-circle-o" />
                 </a>
               </Tooltip>)}
           </span>
@@ -273,7 +284,9 @@ class App extends Component {
 
     const containerLayout = {
       style: {
-        padding: '20px',
+        padding: '20px 80px 60px',
+        maxWidth: '1500px',
+        margin: '0 auto'
       }
     };
 
@@ -285,12 +298,13 @@ class App extends Component {
     }
 
     return <div {...containerLayout}>
+      <h1 style={{ marginBottom: '20px' }}>Cello Repertoire Search</h1>
       <FormItem
         {...formItemLayout}
         label="Composer"
       >
         <Select
-          value={this.state.composerText}
+          value={this.state.composerText || undefined}
           showSearch
           placeholder="Search composer"
           optionFilterProp="children"
@@ -332,7 +346,7 @@ class App extends Component {
         label="Category"
       >
         <Select
-          value={this.state.categoryText}
+          value={this.state.categoryText || undefined}
           showSearch
           placeholder="Select a category"
           optionFilterProp="children"
@@ -399,6 +413,13 @@ class App extends Component {
           emptyText: 'Nothing found'
         }}
       />
+      <footer style={{color: 'lightgrey', display: 'flex', flexDirection: 'column', fontSize: 8}}>
+        <div>Cello Repertoire Search built by <a href="https://github.com/alanbuchanan" style={{color: 'gray'}}>Rory Smith</a></div>
+        <div>Content from <a href="http://www.cello.org/Libraries/references/syllabus.html" style={{color: 'gray'}}>cello.org</a></div>
+        <div>
+          <a href="google.com" style={{color: 'gray'}}>Donate</a>
+        </div>
+      </footer>
     </div>
       ;
   }

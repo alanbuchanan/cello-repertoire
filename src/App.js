@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import 'antd/dist/antd.css';
-import { Table, Input, Button, Icon, Select, Row, Col, Slider, Pagination, Radio } from 'antd';
+import { Table, Input, Button, Icon, Select, Row, Col, Slider, Pagination, Radio, Tooltip } from 'antd';
 const Option = Select.Option;
 
 class App extends Component {
@@ -186,23 +186,23 @@ class App extends Component {
         key: "difficulty",
         render: (item) => <span style={this.getDifficultyColor(_.first(item))}>{item.length > 1 ? `${_.first(item)} - ${_.last(item)}` : _.first(item)}</span>,
         sorter: (a, b) => {
-          return a.difficulties[0] - b.difficulties[0];
+          return a.difficulties[0] - b.difficulties[0] || a.difficulties.length - b.difficulties.length
         },
       },
       {
         title: '',
         key: 'amazon_link',
-        render: item => <a href={`https://www.amazon.co.uk/s/field-keywords=${item.composer}%20${item.piece}%20cello%20sheet%20music`}><Icon type="shopping-cart" /></a>
+        render: item => <Tooltip placement="bottom" title="Amazon"><a href={`https://www.amazon.co.uk/s/field-keywords=${item.composer}%20${item.piece}%20cello%20sheet%20music`}><Icon type="shopping-cart" /></a></Tooltip>
       },
       {
         title: '',
         key: 'imslp_link',
-        render: item => <a href={`https://www.google.co.uk/search?q=imslp+${item.composer}+${item.piece}+cello`}><Icon type="book" /></a>
+        render: item => <Tooltip placement="bottom" title="IMSLP"><a href={`https://www.google.co.uk/search?q=imslp+${item.composer}+${item.piece}+cello`}><Icon type="book" /></a></Tooltip>
       },
       {
         title: '',
         key: 'youtube_link',
-        render: item => <a href={`https://www.youtube.com/results?search_query=${item.composer}+${item.piece}+cello`}><Icon type="play-circle-o" /></a>
+        render: item => item.category !== 'Methods/Studies/Scale books' && <Tooltip placement="bottom" title="YouTube"><a href={`https://www.youtube.com/results?search_query=${item.composer}+${item.piece}+cello`}><Icon type="play-circle-o" /></a></Tooltip>
       }
     ];
 

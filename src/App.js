@@ -413,11 +413,11 @@ class App extends Component {
           emptyText: 'Nothing found'
         }}
       />
-      <footer style={{color: 'lightgrey', display: 'flex', flexDirection: 'column', fontSize: 8}}>
-        <div>Cello Repertoire Search built by <a href="https://github.com/alanbuchanan" style={{color: 'gray'}}>Rory Smith</a></div>
-        <div>Content from <a href="http://www.cello.org/Libraries/references/syllabus.html" style={{color: 'gray'}}>cello.org</a></div>
+      <footer style={{ color: 'lightgrey', display: 'flex', flexDirection: 'column', fontSize: 8 }}>
+        <div>Cello Repertoire Search built by <a href="https://github.com/alanbuchanan" style={{ color: 'gray' }}>Rory Smith</a></div>
+        <div>Content from <a href="http://www.cello.org/Libraries/references/syllabus.html" style={{ color: 'gray' }}>cello.org</a></div>
         <div>
-          <a href="google.com" style={{color: 'gray'}}>Donate</a>
+          <a href="google.com" style={{ color: 'gray' }}>Donate</a>
         </div>
       </footer>
     </div>

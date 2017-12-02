@@ -11,8 +11,8 @@ class App extends Component {
     this.setInitialState();
   }
 
-  setInitialState() {
-    this.state = {
+  getInitialStateObject() {
+    return {
       data: [],
       pieceText: '',
       composerText: '',
@@ -22,10 +22,13 @@ class App extends Component {
       composers: [],
       categories: [],
       minDifficulty: 1,
-      maxDifficulty: 12,
-      isDifficultyRange: false,
+      maxDifficulty: 13,
       loading: true,
     };
+  }
+
+  setInitialState() {
+    this.state = this.getInitialStateObject();
   }
 
   getData() {
@@ -104,7 +107,7 @@ class App extends Component {
           && record.composer.match(regComposer)
           && record.publisher.match(regPublisher)
           && record.category.match(regCategory)
-          && _.first(record.difficulties) >= minDifficulty && _.last(record.difficulties) <= maxDifficulty
+          && record.difficulties.includes(minDifficulty) || record.difficulties.includes(maxDifficulty)
 
         if (!match) {
           return null;
@@ -124,8 +127,15 @@ class App extends Component {
   }
 
   onReset = () => {
-    this.setInitialState();
-    setTimeout(() => this.getData(), 200)
+    this.setState({
+      pieceText: '',
+      composerText: '',
+      categoryText: '',
+      publisherText: '',
+      minDifficulty: 1,
+      maxDifficulty: 12,
+    });
+    this.triggerDelayedSearch()
   }
 
   onDifficultySliderChange = (arr) => {
@@ -299,6 +309,7 @@ class App extends Component {
 
     return <div {...containerLayout}>
       <h1 style={{ marginBottom: '20px' }}>Cello Repertoire Search</h1>
+
       <FormItem
         {...formItemLayout}
         label="Composer"
@@ -322,6 +333,7 @@ class App extends Component {
           onClick={() => this.emptyStateFieldAndUpdateTable('composerText')}
         />
       </FormItem>
+
       <FormItem
         {...formItemLayout}
         label="Piece"
@@ -341,6 +353,7 @@ class App extends Component {
           onClick={() => this.emptyStateFieldAndUpdateTable('pieceText')}
         />
       </FormItem>
+
       <FormItem
         {...formItemLayout}
         label="Category"
@@ -364,6 +377,7 @@ class App extends Component {
           onClick={() => this.emptyStateFieldAndUpdateTable('categoryText')}
         />
       </FormItem>
+
       <FormItem
         {...formItemLayout}
         label="Publisher"
@@ -383,6 +397,7 @@ class App extends Component {
           onClick={() => this.emptyStateFieldAndUpdateTable('publisherText')}
         />
       </FormItem>
+
       <FormItem
         {...formItemLayout}
         label="Difficulty"
@@ -397,12 +412,14 @@ class App extends Component {
           onAfterChange={this.onSearch}
         />
       </FormItem>
+
       <FormItem
         {...tailFormItemLayout}
       >
         <Button type="primary" onClick={this.onSearch} style={{ marginRight: '20px' }}>Search</Button>
         <Button onClick={this.onReset}>Reset</Button>
       </FormItem>
+
       <Table
         pagination={{ defaultPageSize: 25 }}
         dataSource={this.state.data}
@@ -410,16 +427,18 @@ class App extends Component {
         onChange={this.onChange}
         loading={this.state.loading}
         locale={{
-          emptyText: 'Nothing found'
+          emptyText: this.state.loading ? '' : 'Nothing found'
         }}
       />
+
       <footer style={{ color: 'lightgrey', display: 'flex', flexDirection: 'column', fontSize: 8 }}>
         <div>Cello Repertoire Search built by <a href="https://github.com/alanbuchanan" style={{ color: 'gray' }}>Rory Smith</a></div>
-        <div>Content from <a href="http://www.cello.org/Libraries/references/syllabus.html" style={{ color: 'gray' }}>cello.org</a></div>
+        <div>Data from <a href="http://www.cello.org/Libraries/references/syllabus.html" style={{ color: 'gray' }}>cello.org</a></div>
         <div>
-          <a href="google.com" style={{ color: 'gray' }}>Donate</a>
+          <a href="https://www.paypal.me/rorysmith123" style={{ color: 'gray' }}>Donate</a>
         </div>
       </footer>
+
     </div>
       ;
   }

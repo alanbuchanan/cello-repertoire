@@ -1,35 +1,25 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import 'antd/dist/antd.css';
-import { Table, Input, Button, Icon, Select, Row, Col, Slider, Pagination, Radio, Tooltip, Form } from 'antd';
+import { Table, Input, Button, Icon, Select, Slider, Tooltip, Form } from 'antd';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 class App extends Component {
-  constructor() {
-    super();
-    this.setInitialState();
-  }
 
-  getInitialStateObject() {
-    return {
-      data: [],
-      pieceText: '',
-      composerText: '',
-      categoryText: '',
-      publisherText: '',
-      filtered: false,
-      composers: [],
-      categories: [],
-      minDifficulty: 1,
-      maxDifficulty: 13,
-      loading: true,
-    };
-  }
-
-  setInitialState() {
-    this.state = this.getInitialStateObject();
-  }
+  state = {
+    data: [],
+    pieceText: '',
+    composerText: '',
+    categoryText: '',
+    publisherText: '',
+    filtered: false,
+    composers: [],
+    categories: [],
+    minDifficulty: 1,
+    maxDifficulty: 13,
+    loading: true,
+  };
 
   getData() {
     this.setState({ loading: true });
@@ -92,7 +82,7 @@ class App extends Component {
   }
 
   onSearch = () => {
-    const { pieceText, composerText, categoryText, publisherText, data, originalData, minDifficulty, maxDifficulty } = this.state;
+    const { pieceText, composerText, categoryText, publisherText, originalData, minDifficulty, maxDifficulty } = this.state;
     const regPiece = new RegExp(pieceText, 'gi');
     const regComposer = new RegExp(composerText, 'gi');
     const regPublisher = new RegExp(publisherText, 'gi');
@@ -323,7 +313,7 @@ class App extends Component {
           onBlur={this.onSearch}
           {...inputWithRemoveIconLayout}
         >
-          {this.state.composers.length > 0 && this.state.composers.map(composer => <Option value={composer}>{composer}</Option>)}
+          {this.state.composers.length > 0 && this.state.composers.map(composer => <Option key={composer} value={composer}>{composer}</Option>)}
         </Select>
         <Icon
           className="dynamic-delete-button"
@@ -340,7 +330,6 @@ class App extends Component {
           value={this.state.pieceText}
           ref={ele => this.pieceInput = ele}
           placeholder="Search piece"
-          value={this.state.pieceText}
           onChange={(e) => this.onInputChange(e, 'pieceText')}
           onBlur={this.onSearch}
           {...inputWithRemoveIconLayout}
@@ -367,7 +356,7 @@ class App extends Component {
           onBlur={this.onSearch}
           {...inputWithRemoveIconLayout}
         >
-          {this.state.categories.length > 0 && this.state.categories.map(category => <Option value={category}>{category}</Option>)}
+          {this.state.categories.length > 0 && this.state.categories.map(category => <Option key={category} value={category}>{category}</Option>)}
         </Select>
         <Icon
           className="dynamic-delete-button"
@@ -384,7 +373,6 @@ class App extends Component {
           value={this.state.publisherText}
           ref={ele => this.publisherInput = ele}
           placeholder="Search publisher"
-          value={this.state.publisherText}
           onChange={(e) => this.onInputChange(e, 'publisherText')}
           onBlur={this.onSearch}
           {...inputWithRemoveIconLayout}
@@ -427,6 +415,7 @@ class App extends Component {
         locale={{
           emptyText: this.state.loading ? '' : 'Nothing found'
         }}
+        rowKey={record => record.piece + record.composer + record.category}
       />
 
       <footer style={{ color: 'lightgrey', display: 'flex', flexDirection: 'column', fontSize: 8 }}>

@@ -426,7 +426,7 @@ class App extends Component {
         <div>Cello Repertoire Search built by <a href="https://github.com/alanbuchanan" style={{ color: 'gray' }}>Rory Smith</a></div>
         <div>Data from <a href="http://www.cello.org/Libraries/references/syllabus.html" style={{ color: 'gray' }}>cello.org</a></div>
         <div>
-          <a href="https://www.paypal.me/rorysmith123" style={{ color: 'gray' }}>Donate</a>
+          <a href="https://www.paypal.me/rorysmith123" style={{ color: 'gray' }}>Donate <Icon type="heart-o" style={{ color: '#bc2121' }} /></a>
         </div>
       </footer>
 

@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import 'antd/dist/antd.css';
 import { Table, Input, Button, Icon, Select, Slider, Tooltip, Form } from 'antd';
+import { Accordion, List, Popover } from 'antd-mobile';
+import 'antd-mobile/dist/antd-mobile.css';
 const FormItem = Form.Item;
+const Item = List.Item;
 const Option = Select.Option;
 
 class App extends Component {
@@ -19,6 +22,22 @@ class App extends Component {
     minDifficulty: 1,
     maxDifficulty: 13,
     loading: true,
+    visible: false,
+    selected: ''
+  };
+
+  onSelect = (opt) => {
+    // console.log(opt.props.value);
+    this.setState({
+      visible: false,
+      selected: opt.props.value,
+    });
+  };
+
+  handleVisibleChange = (visible) => {
+    this.setState({
+      visible,
+    });
   };
 
   getData() {
@@ -301,6 +320,68 @@ class App extends Component {
       },
       className: "dynamic-delete-button",
       type: "minus-circle-o",
+    }
+
+    if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
+      return <div>
+
+        <FormItem
+          {...formItemLayout}
+          label="Composer"
+        >
+          <Select
+            value={this.state.composerText || undefined}
+            showSearch
+            placeholder="Search composer"
+            optionFilterProp="children"
+            ref={ele => this.composerInput = ele}
+            onChange={val => this.onComposerInputChange(val)}
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            onBlur={this.onSearch}
+            {...inputWithRemoveIconLayout}
+          >
+            {this.state.composers.length > 0 && this.state.composers.map(composer => <Option key={composer} value={composer}>{composer}</Option>)}
+          </Select>
+          <Icon
+            {...deleteIconProps}
+            onClick={() => this.emptyStateFieldAndUpdateTable('composerText')}
+          />
+        </FormItem>
+        <Accordion defaultActiveKey="0" className="my-accordion">
+          {this.state.data.map(item => <Accordion.Panel 
+            header={<span><span style={ this.getDifficultyColor(_.first(item.difficulties)) }>•</span> {`${item.composer} - ${item.piece}`}</span>} className="pad">
+            <List className="my-list">
+              <Item extra={`${item.publisher}`} style={{ backgroundColor: '#eee' }}>Publisher</Item>
+              <Item extra={<span style={this.getDifficultyColor(_.first(item.difficulties))}>{item.difficulties.length > 1 ? `${_.first(item.difficulties)} - ${_.last(item.difficulties)}` : _.first(item.difficulties)}</span>} style={{ backgroundColor: '#eee' }}>Difficulty</Item>
+              <Item extra={<div>
+                <span {...linkLayout}>
+                  <Tooltip placement="bottom" title="Amazon">
+                    <a href={`https://www.amazon.com/s/field-keywords=${item.composer}%20${item.piece}%20cello%20sheet%20music`}>
+                      <Icon {...iconLayout} type="shopping-cart" />
+                    </a>
+                  </Tooltip>
+                </span>
+                <span {...linkLayout}>
+                  <Tooltip placement="bottom" title="IMSLP">
+                    <a href={`https://www.google.co.uk/search?q=imslp+${item.composer}+${item.piece}+cello`}>
+                      <Icon {...iconLayout} type="book" />
+                    </a>
+                  </Tooltip>
+                </span>
+                <span>
+                  {item.category !== 'Methods/Studies/Scale books' && (
+                    <Tooltip placement="bottom" title="YouTube">
+                      <a href={`https://www.youtube.com/results?search_query=${item.composer}+${item.piece}+cello`}>
+                        <Icon {...iconLayout} type="play-circle-o" />
+                      </a>
+                    </Tooltip>)}
+                </span>
+              </div>} style={{ backgroundColor: '#eee' }}>Links</Item>
+            </List>
+          </Accordion.Panel>)}
+        </Accordion>
+
+      </div>
     }
 
     return <div {...containerLayout}>

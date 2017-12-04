@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import 'antd-mobile/dist/antd-mobile.css';
 import 'antd/dist/antd.css';
 import { Table, Input, Button, Icon, Select, Slider, Tooltip, Form } from 'antd';
 import { Accordion, List } from 'antd-mobile';
-import 'antd-mobile/dist/antd-mobile.css';
 const FormItem = Form.Item;
 const Item = List.Item;
 const Option = Select.Option;
